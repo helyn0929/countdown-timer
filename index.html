@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>見面倒數圈</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: transparent; /* ✅ 背景透明 */
+    margin: 0;
+  }
+
+  .countdown {
+    position: relative;
+    width: 200px;
+    height: 200px;
+  }
+
+  .circle-bg {
+    fill: none;
+    stroke: rgba(230, 230, 230, 0.4); /* 淡灰透明圓圈背景 */
+    stroke-width: 12;
+  }
+
+  .circle {
+    fill: none;
+    stroke: #FF5500; /* 主色：亮橘紅 */
+    stroke-width: 12;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dashoffset 1s linear;
+  }
+
+  /* 中間的倒數數字 */
+  .text {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+    font-size: 50px;
+    color: #2F0000;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* 圓圈內的「天」 */
+  .label {
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+    color: #FFAA80;
+    font-size: 20px;
+    text-align: center;
+  }
+
+  /* 圓圈外下方的 TIMER */
+  .label2 {
+    position: absolute;
+    top: 115%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+    color: #2F0000;
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="countdown">
+  <svg width="200" height="200" style="background: transparent;">
+    <circle class="circle-bg" cx="100" cy="100" r="90"/>
+    <circle class="circle" cx="100" cy="100" r="90"/>
+  </svg>
+  <div class="text" id="days">--</div>
+  <div class="label">天</div>
+  <div class="label2">TIMER</div>
+</div>
+
+<script>
+  // 🎯 修改這裡 → 設定見面日期
+  const targetDate = new Date("2026-02-13T00:00:00");
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = targetDate - now;
+    const days = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+    document.getElementById("days").textContent = days;
+
+    // 🌀 繪製圓形進度
+    const circle = document.querySelector(".circle");
+    const radius = circle.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
+    circle.style.strokeDasharray = `${circumference}`;
+    const percent = Math.max(0, 1 - days / 100); // 100天為滿圈，可調整
+    circle.style.strokeDashoffset = circumference * percent;
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 86400000); // 每天更新一次
+</script>
+
+</body>
+</html>
